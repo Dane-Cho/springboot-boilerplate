@@ -1,0 +1,54 @@
+server:
+  port: 8080
+
+
+spring:
+  profiles: local
+
+  banner:
+    location: local-banner.txt
+
+  devtools:
+    livereload:
+      enabled: true
+    restart:
+      exclude: templates/**, static/**
+      enabled: true
+
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://ec2-13-124-110-44.ap-northeast-2.compute.amazonaws.com:3306/test?autoReconnect=true&useSSL=false&characterEncoding=UTF-8&serverTimezone=UTC
+    username: root
+    password: root
+
+  jpa:
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    hibernate:
+      ddl-auto: validate
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    show_sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        use_sql_comments: false
+
+  jooq:
+    sql-dialect: mysql
+
+logging:
+  level:
+    com.ethon.springboot: debug
+    org:
+      jooq:
+        tools:
+          LoggerListener: debug
+#    org:
+#      hibernate:
+#        SQL: info
+#        type:
+#          descriptor:
+#            sql:
+#              BasicBinder: trace

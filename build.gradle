@@ -1,0 +1,88 @@
+plugins {
+//    외부 톰캣 사용시
+//    id 'war'
+
+//    Docker Image Library
+//    id 'com.google.cloud.tools.jib' version '1.0.0'
+
+    id 'java'
+    id 'org.springframework.boot' version '2.1.6.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+    id 'nu.studer.jooq' version '3.0.3'
+
+}
+
+apply from :'jooq.gradle'
+
+jar {
+    archivesBaseName = 'springboot-boilerplate'
+    archiveVersion = '1.0.0-SNAPSHOT'
+}
+
+ext {
+    querydslVersion = '4.1.4'
+}
+
+repositories {
+    jcenter()
+}
+
+def generatedQueryDSL = 'target/generated-soruces/queryDSL/'
+def generatedJooq = 'target/generated-soruces/jooq/'
+
+sourceSets {
+    main.java.srcDirs += [ generatedQueryDSL, generatedJooq ]
+}
+
+clean {
+    doFirst {
+        delete generatedJooq
+        delete generatedQueryDSL
+    }
+}
+
+task jooqSourceUpdate {
+    doFirst {
+        delete generatedQueryDSL
+    }
+    doLast {
+        generateDevJooqSchemaSource
+    }
+}
+
+tasks.withType(JavaCompile) {
+    options.annotationProcessorGeneratedSourcesDirectory = file(generatedQueryDSL)
+}
+
+
+dependencies {
+    annotationProcessor(
+            "com.querydsl:querydsl-apt:$querydslVersion:jpa",
+            "org.hibernate.javax.persistence:hibernate-jpa-2.1-api:1.0.2.Final",
+            "javax.annotation:javax.annotation-api:1.3.2",
+            "org.projectlombok:lombok"
+    )
+    implementation 'org.springframework.boot:spring-boot-starter-hateoas'
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-jooq'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation "com.querydsl:querydsl-apt:$querydslVersion"
+    implementation "com.querydsl:querydsl-jpa:$querydslVersion"
+    implementation "com.querydsl:querydsl-core:$querydslVersion"
+    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:1.3.2'
+    implementation 'org.modelmapper:modelmapper:2.3.0'
+//    implementation 'org.springframework.boot:spring-boot-devtools'
+
+//    외부 톰캣 사용시
+//    providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
+
+    runtimeOnly 'mysql:mysql-connector-java'
+
+    jooqRuntime 'mysql:mysql-connector-java'
+
+    compileOnly 'org.projectlombok:lombok'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}

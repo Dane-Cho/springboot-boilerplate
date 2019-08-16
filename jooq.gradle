@@ -1,0 +1,54 @@
+jooq {
+    version = '3.11.9'
+    edition = 'OSS'
+    dev(sourceSets.main) {
+        jdbc {
+            driver = 'com.mysql.cj.jdbc.Driver'
+            url = 'jdbc:mysql://ec2-13-124-110-44.ap-northeast-2.compute.amazonaws.com:3306/test?useUnicode=true&characterEncoding=utf8'
+            user = 'root'
+            password = 'root'
+        }
+        generator {
+            name = 'org.jooq.codegen.DefaultGenerator'
+
+            strategy {
+                name = 'org.jooq.codegen.DefaultGeneratorStrategy'
+            }
+
+            database {
+                name = 'org.jooq.meta.mysql.MySQLDatabase'
+
+                properties {
+                    property {
+                        key = 'dialect'
+                        value = 'MYSQL'
+                    }
+                }
+
+                inputSchema = 'test'
+            }
+
+            generate {
+                relations = true
+                deprecated = true
+                instanceFields = true
+                immutablePojos = false
+                pojosEqualsAndHashCode = false
+                interfaces = false
+                daos = true
+                generatedAnnotation = false
+                jpaAnnotations = false
+                springAnnotations = true
+                validationAnnotations = true
+                globalObjectReferences = true
+                fluentSetters = true
+                routines = false
+            }
+
+            target {
+                packageName = 'com.ethon.springboot'
+                directory = 'target/generated-soruces/jooq/'
+            }
+        }
+    }
+}
