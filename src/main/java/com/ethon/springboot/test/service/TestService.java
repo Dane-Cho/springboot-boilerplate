@@ -26,6 +26,7 @@ public class TestService {
         List<UserModel> users = jooq.select().from(TBL_USER).fetchInto(UserModel.class);
 
         // A.
+        // B.
         return null;
     }
 }
